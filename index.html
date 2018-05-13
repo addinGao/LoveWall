@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+	<title>全网爱链墙</title>
+	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+  <link rel='stylesheet prefetch' href='http://www.johnblazek.net/codepen-resources/3d-carousel/css/stylesheet.css'>
+
+    <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+	<style>
+			/* 添加一条记录 */
+			.g-tips{
+				position: fixed;
+				top:0;
+				left:0;
+				bottom: 0;
+				right: 0;
+				background-color: rgba(0, 0, 0, .5);
+				display: block;
+				z-index: 10;
+				display: none;
+		}
+		.g-content{
+			width: 500px;
+			height: 600px;
+			background-color: white;
+			border-radius: 5px;
+			-moz-box-shadow:0px 0px 20px #F2F2F2; 
+			-webkit-box-shadow:0px 0px 20px #F2F2F2;
+			box-shadow:0px 0px 20px #F2F2F2;
+			position: absolute;
+			top:50%;
+			left:50%;
+			margin-left: -250px;
+			margin-top: -300px;
+		}
+		.liuyan{
+			box-sizing: border-box;
+   	  padding: 10px 30px;
+		}
+		.liuyanContent{
+			 width:100%;
+			 height: 80px;
+			 color:black;
+			 box-sizing: border-box;
+			 padding:10px;
+			 font-size: 14px;
+			 resize:none;
+			 border-radius: 5px;
+			 border:1px solid #ccc;
+		}
+		/* 加载等待动画 */
+		.wait{
+			position: fixed;
+			top:0;
+			left:0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, .8);
+			display: none;
+			z-index:100;
+		}
+		.spinner {
+			margin:300px auto 0;
+			width: 150px;
+			text-align: center;
+		}
+		.spinner > div {
+			width: 30px;
+			height: 30px;
+		  background-color: white;
+			border-radius: 100%;
+			display: inline-block;
+			-webkit-animation: bouncedelay 1.4s infinite ease-in-out;
+			animation: bouncedelay 1.4s infinite ease-in-out;
+			/* Prevent first frame from flickering when animation starts */
+			-webkit-animation-fill-mode: both;
+			animation-fill-mode: both;
+		}
+		
+		.spinner .bounce1 {
+			-webkit-animation-delay: -0.32s;
+			animation-delay: -0.32s;
+		}
+		
+		.spinner .bounce2 {
+			-webkit-animation-delay: -0.16s;
+			animation-delay: -0.16s;
+		}
+		
+		@-webkit-keyframes bouncedelay {
+			0%, 80%, 100% { -webkit-transform: scale(0.0) }
+			40% { -webkit-transform: scale(1.0) }
+		}
+		
+		@keyframes bouncedelay {
+			0%, 80%, 100% {
+				transform: scale(0.0);
+				-webkit-transform: scale(0.0);
+			} 40% {
+				transform: scale(1.0);
+				-webkit-transform: scale(1.0);
+			}
+		}
+		.g-oks{
+				height: 50px;
+				line-height: 50px;
+				background-color: green;
+				color:white;
+				position: absolute;
+				top:50%;
+				left: 50%;
+				margin-top:-25px;
+				margin-left: -60px;
+				border-radius: 5px;
+				display: none;
+				padding:0 10px;
+				z-index:30;
+			}
+			.addOne{
+				position: absolute;
+				right: 50px;
+				top:50px;
+			}
+			.dialog{
+				position: absolute;
+				top:100px;
+				left:50%;
+				width:400px;
+				margin-left: -200px;
+				height: 30px;
+				background-color: white;
+				line-height: 30px;
+				border-radius: 5px;
+				overflow: hidden;
+				text-align: center;
+				box-shadow: inset 0px 0px 30px yellow;
+			}
+			.dialog span{
+				 color:black;
+				 /* animation: pao 1.4s infinite ease-in-out; */
+				 transform: translateX(100px);
+				 white-space:nowrap;
+			}
+			.todo{
+				 position: absolute;
+				 width:300px;
+				 height: 200px;
+				 background-color: rgba(0, 0, 0, .5);
+				 color:lightblue;
+				 text-align: center;
+				 top:20px;
+				 left: 20px;
+				 padding:10px;
+				 box-sizing: border-box;
+				 border-radius: 20px;
+				 overflow: hidden;
+			}
+			.list{
+				width:280px;
+				height: 180px;
+				overflow: auto
+			}
+			.list li{
+				padding:5px;
+				text-align: left;
+				box-sizing: border-box;
+				font-size: 12px;
+				line-height: 18px;
+				color:white;
+				overflow: hidden;
+				text-overflow:ellipsis;
+				white-space: nowrap;
+			}
+			.title{
+				 position: absolute;
+				 text-align: center;
+				 font-size:20px;
+				 line-height: 50px;
+				 height: 50px;
+				 top:10px;
+				 width: 250px;
+				 left:50%;
+				 margin-left: -125px;
+   			 color:#FFFFFF;  
+    		 text-shadow: 0 1px 0 #ccc,  
+               0 2px 0 #c9c9c9,  
+               0 3px 0 #bbb,  
+               0 4px 0 #b9b9b9,  
+               0 5px 0 #aaa,  
+               0 6px 1px rgba(0,0,0,.1),  
+               0 0 5px rgba(0,0,0,.1),  
+               0 1px 3px rgba(0,0,0,.3),  
+               0 3px 5px rgba(0,0,0,.2),  
+               0 5px 10px rgba(0,0,0,.25),  
+               0 10px 10px rgba(0,0,0,.2),  
+               0 20px 20px rgba(0,0,0,.15);  
+			}
+	</style>
+</head>
+
+<body>
+
+<div style="text-align:center;clear:both">
+<!-- <script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+<script src="/follow.js" type="text/javascript"></script> -->
+</div>
+
+	<div id="contentContainer" class="trans3d"> 
+	<section id="carouselContainer" class="trans3d">
+		<figure id="item1" class="carouselItem trans3d"><div class="carouselItemInner trans3d">
+			<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525961507366&di=ae97cb9e9f673806a98b1f55c5a81000&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01571657c7f3620000012e7e9f3856.png" class="imgs" alt="">
+		</div></figure>
+		<figure id="item2" class="carouselItem trans3d"><div class="carouselItemInner trans3d">
+			<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525961507365&di=a32ab1d97c89e557bad6dc406b451972&imgtype=0&src=http%3A%2F%2Fs13.sinaimg.cn%2Fmw690%2F004dUNghgy6GwZyRaBC1c%26690" class="imgs" alt="">
+		</div></figure>
+		<figure id="item3" class="carouselItem trans3d"><div class="carouselItemInner trans3d">
+			<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525961507364&di=4a403c101c4633c7f2ea9cbbd66fd582&imgtype=0&src=http%3A%2F%2Fwww.si27.com%2Fwp-content%2Fuploads%2F2016%2F07%2Fqingganpai.jpg" class="imgs" alt="">
+		</div></figure>
+		<figure id="item4" class="carouselItem trans3d"><div class="carouselItemInner trans3d">
+				<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525961507366&di=ae97cb9e9f673806a98b1f55c5a81000&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01571657c7f3620000012e7e9f3856.png" class="imgs" alt="">
+			</div></figure>
+			<figure id="item5" class="carouselItem trans3d"><div class="carouselItemInner trans3d">
+				<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525961507365&di=a32ab1d97c89e557bad6dc406b451972&imgtype=0&src=http%3A%2F%2Fs13.sinaimg.cn%2Fmw690%2F004dUNghgy6GwZyRaBC1c%26690" class="imgs" alt="">
+			</div></figure>
+			<figure id="item6" class="carouselItem trans3d"><div class="carouselItemInner trans3d">
+				<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525961507364&di=4a403c101c4633c7f2ea9cbbd66fd582&imgtype=0&src=http%3A%2F%2Fwww.si27.com%2Fwp-content%2Fuploads%2F2016%2F07%2Fqingganpai.jpg" class="imgs" alt="">
+			</div></figure>
+			<figure id="item7" class="carouselItem trans3d"><div class="carouselItemInner trans3d">
+					<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525961507365&di=a32ab1d97c89e557bad6dc406b451972&imgtype=0&src=http%3A%2F%2Fs13.sinaimg.cn%2Fmw690%2F004dUNghgy6GwZyRaBC1c%26690" class="imgs" alt="">
+				</div></figure>
+	</section>
+	</div>
+	<div class="g-tips">
+		<div class="g-content">
+				<form action="">
+				<div style="line-height: 60px;text-align: center;font-size:25px;font-weight: 500;font-style: italic;color:#c00">Show Picture</div>
+				<div class="input-group" style="box-sizing: border-box;padding:10px 30px;">
+						<span class="input-group-addon">图片地址一</span>
+						<input type="text" class="form-control v1" placeholder="图片地址不要过长" aria-describedby="basic-addon1">
+				</div>
+				<div class="input-group" style="box-sizing: border-box;padding:10px 30px;">
+						<span class="input-group-addon">图片地址二</span>
+						<input type="text" class="form-control v2" placeholder="图片地址不要过长" aria-describedby="basic-addon1">
+				</div>
+				<div class="input-group" style="box-sizing: border-box;padding:10px 30px;">
+						<span class="input-group-addon">图片地址三</span>
+						<input type="text" class="form-control v3" placeholder="图片地址不要过长" aria-describedby="basic-addon1">
+				</div>
+				<div class="input-group" style="box-sizing: border-box;padding:10px 30px;">
+						<span class="input-group-addon">图片地址四</span>
+						<input type="text" class="form-control v4" placeholder="图片地址不要过长" aria-describedby="basic-addon1">
+				</div>
+				<div class="input-group" style="box-sizing: border-box;padding:10px 30px;">
+					<span class="input-group-addon">图片地址五</span>
+					<input type="text" class="form-control v5" placeholder="图片地址不要过长" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group" style="box-sizing: border-box;padding:10px 30px;">
+					<span class="input-group-addon">图片地址六</span>
+					<input type="text" class="form-control v6" placeholder="图片地址不要过长" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group" style="box-sizing: border-box;padding:10px 30px;">
+					<span class="input-group-addon">图片地址七</span>
+					<input type="text" class="form-control v7" placeholder="图片地址不要过长" aria-describedby="basic-addon1">
+			</div>
+			<div style="text-align: center;border-radius: 5px;" class="liuyan">
+				  <textarea name="" id="" class="liuyanContent values" placeholder="留下你的话，不要过长"></textarea>
+			</div>
+				<div style="text-align: center;padding-top:10px;">
+						<button type="reset" class="btn btn-danger quxiao" style="width:100px;margin-right: 30px;">取消</button>
+						<button type="button" class="btn btn-success tijiao" style="width:100px;background-color: green;border: 0px;">提交</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!-- 加载等待动画 -->
+	<divc class="wait">
+		<div class="spinner">
+			<div class="bounce1"></div>
+			<div class="bounce2"></div>
+			<div class="bounce3"></div>
+		</div>
+	</divc>
+	<div class="g-oks">
+		注册成功
+	</div>
+	<div class="addOne">
+		<button type="button" class="btn btn-primary add">我也来添加</button>
+	</div>
+	<div class="dialog">
+		 <span class="dialogContent"></span>
+	</div>
+	<div class="todo">
+			<p style="padding-bottom: 10px;">播放相册列表-(两小时)切换</p>
+		  <ul class="list">
+				 <li></li>
+			</u>
+	</div>
+	<div class="title">
+		 星云链《全网爱链墙》
+	</div>
+  <script src='js/libs.min.js'></script>
+	<script src="js/index.js"></script>
+	<script src="https://cdn.bootcss.com/jquery/2.1.1-beta1/jquery.js"></script>
+	<script src="./js/nebPay.js"></script>
+	<script src="./js/nebulas.js"></script>
+	<script>
+		 	var NebPay = require("nebpay")
+			var nebPay = new NebPay();
+			var dappAddress = "n1mTe4yhchUjdQq4DupdJDWvgz2b3gyaipv"
+
+			var HttpRequest = require("nebulas").HttpRequest;
+			var Neb = require("nebulas").Neb;
+			var Account = require("nebulas").Account;
+			var Transaction = require("nebulas").Transaction;
+			var Unit = require("nebulas").Unit;
+			var neb = new Neb();
+			// neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
+			neb.setRequest(new HttpRequest("https://mainnet.nebulas.io"));
+			var account, tx, txhash, timer;
+
+			var v1,v2,v3,v4,v5,v6,v7,values;
+			v1 = $(".v1")
+			v2 = $(".v2")
+			v3 = $(".v3")
+			v4 = $(".v4")
+			v5 = $(".v5")
+			v6 = $(".v6")
+			v7 = $(".v7")
+			values = $(".values")
+		  console.log(values.val())
+			nebPay.simulateCall(dappAddress,"0","get","",{
+				listener:get
+			})
+			function get(res) { 
+					// console.log(res)
+					res = JSON.parse(res.result)
+					res = JSON.parse(res)
+					console.log(res)
+					var nodeArr = document.querySelectorAll(".imgs")
+					var dialog = document.querySelector(".dialogContent");
+					dialog.innerHTML = "🌹🌹"+res.obj.advers+"🌹🌹";
+					for (var i=0;i<nodeArr.length;i++){
+						 nodeArr[i].setAttribute("src",res.obj.picArr[i]);
+					}
+					// 添加即将展示图片部分
+					var str = ""
+					for(var j =0;j<res.todo.length;j++){
+						  str+=`<li>${timestampToTime(res.todo[j].timestamp)}: ${res.todo[j].data}</li>`
+					}
+					$(".list").html(str)
+			}
+			// 取消添加
+			$(".quxiao").click(function(){
+				$(".g-tips").fadeOut(500)
+			})
+			$(".add").click(function(){
+				if(testWallte()){
+					return
+				}
+				console.log(111)
+				 $(".g-tips").fadeIn(500)
+			})
+			// 添加一条
+			$(".tijiao").click(function(){
+					var valuess = values.val().trim()
+					var v1s = v1.val().trim()
+					var v2s = v2.val().trim()
+					var v3s = v3.val().trim()
+					var v4s = v4.val().trim()
+					var v5s = v5.val().trim()
+					var v6s = v6.val().trim()
+					var v7s = v7.val().trim()
+					var callArgs = "[\"" + valuess + "\",\"" + v1s +"\",\"" + v2s +"\",\"" + v3s +"\",\"" + v4s +"\",\"" + v5s +"\",\"" + v6s +"\",\"" + v7s + "\"]";
+					if(!(valuess&&v1s&&v2s&&v3s&&v4s&&v5s&&v6s&&v7s)){
+							tips("请填写完整","red",1000)
+							return
+					}else{
+						 if(callArgs.length >700){
+							 tips("图片链接过长，超出传输大小","red",1000)
+							 return
+						 }
+					}
+					
+					nebPay.call(dappAddress,"0","add",callArgs,{
+						listener:adds
+					})
+			})
+			function adds(res){
+				var txhash = res.txhash;
+				console.log(txhash)
+				if(txhash){
+					$(".g-tips").fadeOut(500)
+					testTransitionStatus(txhash,function(){
+							$(".wait").fadeOut(10)
+							v1.val("")
+							v2.val("")
+							v3.val("")
+							v4.val("")
+							v5.val("")
+							v6.val("")
+							v7.val("")
+							values.val("")
+							tips("添加成功","green",1000)
+							nebPay.simulateCall(dappAddress,"0","get","",{
+								listener:get
+							})
+					})
+				}
+			}
+
+			// 每距离1分钟发送请求，更新图片
+			setInterval(function(){
+				nebPay.simulateCall(dappAddress,"0","get","",{
+					listener:get
+				})
+			},1000*60)
+
+			// 工具函数-------------------------------------------
+			function tips(text,background,time){
+					var html = $(".g-oks");
+					html.html(text)
+					background = background || "green"
+					time = time || 1000
+					html.css("backgroundColor",background)
+					$(".g-oks").fadeIn(500);
+					setTimeout(function(){
+						$(".g-oks").fadeOut(1000)
+					},time)
+			}
+			function testTransitionStatus(txhash,callback){
+				timer = setInterval(function(){
+					  $(".wait").fadeIn(500)
+						neb.api.getTransactionReceipt({hash:txhash}).then(function (res) { 
+								if(res.status === 1){
+									clearInterval(timer)
+									if(callback){
+										callback()
+									}
+									return 
+								}
+						})
+				},2000)
+			}
+			function testWallte(){
+				 if(typeof webExtensionWallet === undefined ||typeof webExtensionWallet === null){
+					 alert("先安装 Chrome Nebulas-WebExtensionWallet 钱包插件")
+					 return true
+				 }
+				 return false;
+			}
+			function timestampToTime(timestamp) {
+        var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        Y = date.getFullYear() + '-';
+        M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+				D = date.getDate() ;
+				D = D<10?"0"+D+ ' ':D+ ' '
+				h = date.getHours();
+				h = h<10?"0"+h+ ':':h+ ':'
+				m = date.getMinutes();
+				m = m<10?"0"+m:m
+        return Y+M+D+h+m+"分";
+		}
+	</script>
+
+</body>
+
+</html>
